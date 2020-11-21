@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:palmmemo/constants.dart' as Const;
 import 'package:palmmemo/database.dart';
 import 'package:palmmemo/model/word.dart';
 
@@ -12,6 +13,7 @@ class AddWordPage extends StatefulWidget {
 
 class _AddWordState extends State<AddWordPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isAdded = false;
 
   void _onAddPressed() {
     String word = wordController.text;
@@ -22,6 +24,7 @@ class _AddWordState extends State<AddWordPage> {
     }
 
     insertWord(getDatabase(), Word(word, mean));
+    isAdded = true;
 
     final snackBar = SnackBar(content: Text('Add Success'));
     _scaffoldKey.currentState.showSnackBar(snackBar);
@@ -35,19 +38,25 @@ class _AddWordState extends State<AddWordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Palm Memo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pop(isAdded);
+          return true;
+        },
+        child: Scaffold(
             key: _scaffoldKey,
-            appBar: AppBar(title: Text('Add Word')),
+            appBar: AppBar(
+              title: Text(Const.TITLE_ADD_WORD),
+              leading: new IconButton(
+                icon: new Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.of(context).pop(isAdded),
+              ),
+            ),
             body: Container(
                 width: double.infinity,
                 height: double.infinity,
-                color: Color.fromRGBO(0, 184, 67, 1),
+                // color: Color.fromRGBO(0, 184, 67, 1),
+                color: Colors.white,
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[

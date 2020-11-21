@@ -1,15 +1,18 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:palmmemo/add_word.dart';
 import 'package:palmmemo/constants.dart' as Const;
-import 'package:palmmemo/database.dart';
 import 'package:palmmemo/extension.dart';
 import 'package:palmmemo/model/word.dart';
 import 'package:palmmemo/revel_route.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Palm Memo'),
+      home: MyHomePage(title: Const.TITLE_PALM_MEMO),
     );
   }
 }
@@ -50,7 +53,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Word> wordList;
+  List<Word> wordList = [];
   String meaning = Const.MSG_CLICK_SHOW;
   AudioPlayer audioPlayer;
   bool isLearned = false;
@@ -63,21 +66,19 @@ class _MyHomePageState extends State<MyHomePage> {
     _loadWordList();
   }
 
-  @override
-  void dispose() {
-    closeDb(getDatabase());
-    super.dispose();
-  }
-
   void _loadWordList() {
-    getWords(getDatabase()).then((value) => {
-          setState(() {
-            // random list
-            value.shuffle();
-            print("size is ${value.length}");
-            wordList = value;
-          })
-        });
+    wordList.clear();
+
+    FirebaseFirestore.instance
+        .collection(Const.DATABASE_NAME)
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              wordList.add(Word(element.id, element[Const.COLUMN_WORD],
+                  element[Const.COLUMN_MEAN]));
+            }))
+        .then((value) => setState(() {
+              wordList.shuffle();
+            }));
   }
 
   // todo add done view
@@ -113,6 +114,41 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _deleteWord() {
+    Navigator.of(context).pop();
+
+    CollectionReference words =
+        FirebaseFirestore.instance.collection(Const.DATABASE_NAME);
+    words
+        .doc(wordList[0].id)
+        .delete()
+        .catchError((error) => print("Failed to delete user: $error"));
+
+    setState(() {
+      wordList.removeAt(0);
+    });
+  }
+
+  void _showDeleteWordDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => new AlertDialog(
+              title: Text('Delete'),
+              content: Text('Are you sure you want to delete?'),
+              actions: [
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('No'),
+                ),
+                FlatButton(
+                  textColor: Colors.red,
+                  onPressed: _deleteWord,
+                  child: Text('Yes'),
+                ),
+              ],
+            ));
+  }
+
   void _speakWord() async {
     String audioUrl =
         'https://tts.baidu.com/text2audio?tex=${wordList[0].word}&cuid=baike&lan=ZH&ie=utf-8&ctp=1&pdt=301&vol=9&rate=32&per=5';
@@ -141,6 +177,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: IconButton(
                             icon: Icon(Icons.volume_up, color: Colors.white),
                             onPressed: _speakWord)))
+                : Container(),
+            isWord
+                ? Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                        margin: EdgeInsets.all(20),
+                        child: IconButton(
+                            icon: Icon(Icons.delete, color: Colors.white),
+                            onPressed: _showDeleteWordDialog)))
                 : Container()
           ],
         ),
@@ -197,6 +242,9 @@ class _MyHomePageState extends State<MyHomePage> {
       }
       if (event.isKeyPressed(LogicalKeyboardKey.comma)) {
         _speakWord();
+      }
+      if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
+        _deleteWord();
       }
     }
   }

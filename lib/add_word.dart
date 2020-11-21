@@ -1,7 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:palmmemo/constants.dart' as Const;
-import 'package:palmmemo/database.dart';
-import 'package:palmmemo/model/word.dart';
+import 'package:palmmemo/extension.dart';
+import 'package:flutter/services.dart';
 
 var wordController;
 var meanController;
@@ -15,6 +16,30 @@ class _AddWordState extends State<AddWordPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isAdded = false;
 
+  void _showSuccess() {
+    final snackBar = SnackBar(content: Text('Add Success'));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+
+    isAdded = true;
+  }
+
+  void _showError(String error) {
+    final snackBar = SnackBar(content: Text("Failed to add user: $error"));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+  void _addWord() {
+    CollectionReference words =
+        FirebaseFirestore.instance.collection(Const.DATABASE_NAME);
+    words
+        .add({
+          Const.COLUMN_WORD: wordController.text,
+          Const.COLUMN_MEAN: meanController.text
+        })
+        .then((value) => _showSuccess())
+        .catchError((error) => _showError(error));
+  }
+
   void _onAddPressed() {
     String word = wordController.text;
     String mean = meanController.text;
@@ -23,17 +48,15 @@ class _AddWordState extends State<AddWordPage> {
       return;
     }
 
-    insertWord(getDatabase(), Word(word, mean));
-    isAdded = true;
-
-    final snackBar = SnackBar(content: Text('Add Success'));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    _addWord();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    closeDb(getDatabase());
+  void onEventKey(RawKeyEvent event) async {
+    if (event.runtimeType.toString() == 'RawKeyDownEvent') {
+      if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
+        context.nextEditableTextFocus();
+      }
+    }
   }
 
   @override
@@ -52,26 +75,32 @@ class _AddWordState extends State<AddWordPage> {
                 onPressed: () => Navigator.of(context).pop(isAdded),
               ),
             ),
-            body: Container(
-                width: double.infinity,
-                height: double.infinity,
-                // color: Color.fromRGBO(0, 184, 67, 1),
-                color: Colors.white,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      WordForm(),
-                      MeanForm(),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: FlatButton(
-                          onPressed: _onAddPressed,
-                          textColor: Colors.white,
-                          color: Colors.blue,
-                          child: Text("ADD"),
-                        ),
-                      )
-                    ]))));
+            body: RawKeyboardListener(
+                focusNode: FocusNode(),
+                onKey: onEventKey,
+                autofocus: true,
+                child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    // color: Color.fromRGBO(0, 184, 67, 1),
+                    color: Colors.white,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          WordForm(),
+                          MeanForm(),
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                            child: FlatButton(
+                              onPressed: _onAddPressed,
+                              child: Text('Add',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      .apply(color: Colors.blue)),
+                            ),
+                          )
+                        ])))));
   }
 }
 
@@ -104,6 +133,8 @@ class _WordFormState extends State<WordForm> {
               labelText: "word",
               hintText: "enter your word"),
           controller: wordController,
+          textInputAction: TextInputAction.next,
+          onEditingComplete: () => context.nextEditableTextFocus(),
         ));
   }
 }

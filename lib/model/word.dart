@@ -1,15 +1,7 @@
 class Word {
+  String id;
   String word;
   String mean;
 
-  Word(this.word, this.mean);
-
-  // null for AUTOINCREMENT
-  Map<String, dynamic> toMap() {
-    return {
-      'id': null,
-      'word': word,
-      'mean': mean,
-    };
-  }
+  Word(this.id, this.word, this.mean);
 }

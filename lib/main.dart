@@ -244,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _speakWord();
       }
       if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
-        _deleteWord();
+        _showDeleteWordDialog();
       }
     }
   }

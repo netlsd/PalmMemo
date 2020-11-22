@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "3243300490",
-    "firebase_url": "https://palmmemo-e2ed4.firebaseio.com",
-    "project_id": "palmmemo-e2ed4",
-    "storage_bucket": "palmmemo-e2ed4.appspot.com"
+    "project_number": "1025515316437",
+    "firebase_url": "https://palmmemo-86a51.firebaseio.com",
+    "project_id": "palmmemo-86a51",
+    "storage_bucket": "palmmemo-86a51.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:3243300490:android:022b4bd206950e76b5ff73",
+        "mobilesdk_app_id": "1:1025515316437:android:35e0c8cf27b3eebe516e5c",
         "android_client_info": {
           "package_name": "com.netlsd.palmmemo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "3243300490-0tmubb8ot782bsinljr8d9chvbi9j868.apps.googleusercontent.com",
+          "client_id": "1025515316437-4v79o0okvkkck70u2gktn5gr08ifmh07.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.netlsd.palmmemo",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "3243300490-gcl6ahgmsnofjr6hen276qmlv0jv8h9n.apps.googleusercontent.com",
+          "client_id": "1025515316437-9uar6fkom8n752hjmrslunpko329cs3h.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBUMXouBTrvchJZor4nZ31_X1n2Ln5OdLI"
+          "current_key": "AIzaSyBCaqBdGmnuSY9YBuqKvZcSycaPq3qU15s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "3243300490-gcl6ahgmsnofjr6hen276qmlv0jv8h9n.apps.googleusercontent.com",
+              "client_id": "1025515316437-9uar6fkom8n752hjmrslunpko329cs3h.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:palmmemo/constants.dart' as Const;
 import 'package:palmmemo/extension.dart';
-import 'package:flutter/services.dart';
 
 var wordController;
 var meanController;
@@ -52,7 +52,8 @@ class _AddWordState extends State<AddWordPage> {
   }
 
   void onEventKey(RawKeyEvent event) async {
-    if (event.runtimeType.toString() == 'RawKeyDownEvent') {
+    if (event.runtimeType.toString() == 'RawKeyDownEvent' ||
+        event.runtimeType.toString() == 'minified:n5') {
       if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
         context.nextEditableTextFocus();
       }

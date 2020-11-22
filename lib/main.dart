@@ -81,7 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
             }));
   }
 
-  // todo add done view
   void _nextWord() {
     if (wordList.isNullOrEmpty) {
       return;
@@ -233,7 +232,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onEventKey(RawKeyEvent event) async {
-    if (event.runtimeType.toString() == 'RawKeyDownEvent') {
+    // intercept add word key event, maybe a flutter bug
+    if (Navigator.canPop(context)) {
+      return;
+    }
+
+    if (wordList.isNullOrEmpty) {
+      return;
+    }
+
+    // minified:n5 for release web
+    if (event.runtimeType.toString() == 'RawKeyDownEvent' ||
+        event.runtimeType.toString() == 'minified:n5') {
       if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
         _nextWord();
       }

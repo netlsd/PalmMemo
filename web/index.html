@@ -11,7 +11,7 @@
     Fore more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
   -->
-  <base href="/memo/">
+  <base href="/">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
@@ -41,26 +41,12 @@
     }
   </script>
   <!-- The core Firebase JS SDK is always required and must be listed first -->
-  <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+  <script src="/__/firebase/8.1.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
 
-  <!-- TODO: Add SDKs for Firebase products that you want to use
-       https://firebase.google.com/docs/web/setup#available-libraries -->
+  <!-- Initialize Firebase -->
+  <script src="/__/firebase/init.js"></script>
 
-  <script>
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyBHbsb0iKxUvoKm7wlbfp0YQ6r2GNvIAZQ",
-    authDomain: "palmmemo-e2ed4.firebaseapp.com",
-    databaseURL: "https://palmmemo-e2ed4.firebaseio.com",
-    projectId: "palmmemo-e2ed4",
-    storageBucket: "palmmemo-e2ed4.appspot.com",
-    messagingSenderId: "3243300490",
-    appId: "1:3243300490:web:1d03d93617ad7dbfb5ff73"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-</script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>

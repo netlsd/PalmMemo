@@ -148,9 +148,15 @@ class _MyHomePageState extends State<MyHomePage> {
             ));
   }
 
-  void _speakWord() async {
+  void _baiduSpeak() async {
     String audioUrl =
         'https://tts.baidu.com/text2audio?tex=${wordList[0].word}&cuid=baike&lan=ZH&ie=utf-8&ctp=1&pdt=301&vol=9&rate=32&per=5';
+    await audioPlayer.play(audioUrl);
+  }
+
+  void _googleSpeak() async {
+    String audioUrl =
+        'https://translate.google.com.vn/translate_tts?ie=UTF-8&q=${wordList[0].word}&tl=en&client=tw-ob';
     await audioPlayer.play(audioUrl);
   }
 
@@ -168,24 +174,33 @@ class _MyHomePageState extends State<MyHomePage> {
                   .headline5
                   .apply(color: Colors.white),
             ),
-            isWord
-                ? Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                        margin: EdgeInsets.all(20),
-                        child: IconButton(
-                            icon: Icon(Icons.volume_up, color: Colors.white),
-                            onPressed: _speakWord)))
-                : Container(),
-            isWord
-                ? Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Container(
-                        margin: EdgeInsets.all(20),
-                        child: IconButton(
-                            icon: Icon(Icons.delete, color: Colors.white),
-                            onPressed: _showDeleteWordDialog)))
-                : Container()
+            if (isWord) ...[
+              InkWell(
+                  child: Container(
+                      width: double.infinity, height: double.infinity),
+                  onDoubleTap: () => _nextWord()),
+              Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                      margin: EdgeInsets.all(20),
+                      child: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.white),
+                          onPressed: _showDeleteWordDialog))),
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                      margin: EdgeInsets.all(20),
+                      child: IconButton(
+                          icon: Icon(Icons.volume_up, color: Colors.white),
+                          onPressed: _googleSpeak))),
+              Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                      margin: EdgeInsets.all(20),
+                      child: IconButton(
+                          icon: Icon(Icons.volume_up, color: Colors.white),
+                          onPressed: _baiduSpeak))),
+            ]
           ],
         ),
         margin: EdgeInsets.zero,
@@ -241,21 +256,20 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
 
-    // minified:n5 for release web
-    if (event.runtimeType.toString() == 'RawKeyDownEvent' ||
-        event.runtimeType.toString() == 'minified:n5') {
-      if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-        _nextWord();
-      }
-      if (event.isKeyPressed(LogicalKeyboardKey.space)) {
-        _showAnswer();
-      }
-      if (event.isKeyPressed(LogicalKeyboardKey.comma)) {
-        _speakWord();
-      }
-      if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
-        _showDeleteWordDialog();
-      }
+    if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+      _nextWord();
+    }
+    if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+      _showAnswer();
+    }
+    if (event.isKeyPressed(LogicalKeyboardKey.minus)) {
+      _baiduSpeak();
+    }
+    if (event.isKeyPressed(LogicalKeyboardKey.equal)) {
+      _googleSpeak();
+    }
+    if (event.isKeyPressed(LogicalKeyboardKey.delete)) {
+      _showDeleteWordDialog();
     }
   }
 

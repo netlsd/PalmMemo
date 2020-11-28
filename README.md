@@ -10,5 +10,6 @@ A learning tool for Android, iOS and Web, inspired by palm sugarmemo, write in f
 ## Web Shortcuts
 - Enter: next word
 - Space: show word meaning
-- Comma: speak word
+- Minus: speak word(baidu)
+- Equal: speak word(google)
 - Del: delete word

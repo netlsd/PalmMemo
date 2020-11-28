@@ -52,11 +52,8 @@ class _AddWordState extends State<AddWordPage> {
   }
 
   void onEventKey(RawKeyEvent event) async {
-    if (event.runtimeType.toString() == 'RawKeyDownEvent' ||
-        event.runtimeType.toString() == 'minified:n5') {
-      if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
-        context.nextEditableTextFocus();
-      }
+    if (event.isKeyPressed(LogicalKeyboardKey.tab)) {
+      context.nextEditableTextFocus();
     }
   }
 
